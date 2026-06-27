@@ -274,13 +274,14 @@ body{
     </div>
 
     <%
-    String dbUrl  = "jdbc:mysql://localhost:3306/moviedb";
-    String dbUser = "root";
-    String dbPass = "";
+    String dbHost = System.getenv("MYSQLHOST") != null ? System.getenv("MYSQLHOST") : "localhost";
+String dbPort = System.getenv("MYSQLPORT") != null ? System.getenv("MYSQLPORT") : "3306";
+String dbName = System.getenv("MYSQLDATABASE") != null ? System.getenv("MYSQLDATABASE") : "moviedb";
+String dbUser = System.getenv("MYSQLUSER") != null ? System.getenv("MYSQLUSER") : "root";
+String dbPass = System.getenv("MYSQLPASSWORD") != null ? System.getenv("MYSQLPASSWORD") : "";
 
-    Class.forName("com.mysql.cj.jdbc.Driver");
-    Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPass);
-
+String dbUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName;
+Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPass);
     String reviewMsg = "";
     if(request.getParameter("submitReview") != null)
     {
