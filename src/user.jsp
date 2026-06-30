@@ -262,6 +262,47 @@ body{
     font-weight:500;
 }
 
+/* Home Options */
+.option-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:25px;
+    margin-top:30px;
+    margin-bottom:35px;
+}
+
+.option-card{
+    background:white;
+    border-radius:15px;
+    padding:35px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,0.10);
+    transition:.3s;
+}
+
+.option-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 12px 25px rgba(0,0,0,.15);
+}
+
+.option-card h3{
+    color:#243B55;
+    margin-bottom:10px;
+}
+
+.option-card p{
+    color:#777;
+    font-size:13px;
+    margin-bottom:20px;
+    line-height:1.6;
+}
+
+@media(max-width:768px){
+    .option-grid{
+        grid-template-columns:1fr;
+    }
+}
+
 </style>
 </head>
 
@@ -269,9 +310,11 @@ body{
 <div class="container">
 
     <div class="header">
-        <h1>Movie Recommendation System</h1>
-        <p>Find movies based on your interest</p>
-    </div>
+    <h1>Movie Recommendation System</h1>
+    <p>Find movies based on your interest</p>
+</div>
+
+
 
     <%
     String dbHost = System.getenv("MYSQLHOST") != null ? System.getenv("MYSQLHOST") : "localhost";
@@ -279,7 +322,6 @@ String dbPort = System.getenv("MYSQLPORT") != null ? System.getenv("MYSQLPORT") 
 String dbName = System.getenv("MYSQLDATABASE") != null ? System.getenv("MYSQLDATABASE") : "moviedb";
 String dbUser = System.getenv("MYSQLUSER") != null ? System.getenv("MYSQLUSER") : "root";
 String dbPass = System.getenv("MYSQLPASSWORD") != null ? System.getenv("MYSQLPASSWORD") : "";
-
 String dbUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName;
 Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPass);
     String reviewMsg = "";
@@ -315,162 +357,43 @@ insRev.setInt(4, starRating);
     <% } %>
 
 
-    <!-- RECOMMENDED MOVIES -->
-    <% if(!hasHistory) { %>
-    <h2 class="section-title">Recommended Movies</h2>
-    <div class="movie-grid">
-    <%
-    PreparedStatement top = con.prepareStatement(
-        "SELECT * FROM movies " +
-        "WHERE name NOT IN (SELECT movie_name FROM watch_history) " +
-        "ORDER BY rating DESC LIMIT 6"
-    );
-    ResultSet topRs = top.executeQuery();
+     <h2 class="section-title">Explore</h2>
 
-    while(topRs.next())
-    {
-        String mName   = topRs.getString("name");
-        String mGenre  = topRs.getString("genre");
-        double mRating = topRs.getDouble("rating");
-        String mImg    = topRs.getString("image_url");
-        String mDesc   = topRs.getString("description");
-    %>
+<div class="option-grid">
 
-    <div class="movie-card">
+    <div class="option-card">
 
-        <% if(mImg != null && !mImg.trim().isEmpty()) { %>
-            <img class="movie-poster" src="<%= mImg %>" alt="<%= mName %>"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-            <div class="no-poster" style="display:none;">No Image</div>
-        <% } else { %>
-            <div class="no-poster">No Image</div>
-        <% } %>
+        <h3>Movie Recommendations</h3>
 
-        <div class="card-body">
-            <h3><%= mName %></h3>
+        <p>
+            Browse movies recommended for you based on ratings and your watch history.
+        </p>
 
-            <div class="card-meta">
-                <span class="badge badge-genre"><%= mGenre %></span>
-                <span class="badge badge-rating"><%= mRating %> / 5</span>
-                <span class="badge badge-recommended">Recommended</span>
-            </div>
+        <a href="recommendations.jsp" style="text-decoration:none;">
+            <button class="btn btn-primary">
+                View Recommendations
+            </button>
+        </a>
 
-            <% if(mDesc != null && !mDesc.trim().isEmpty()) { %>
-                <p class="card-desc"><%= mDesc %></p>
-            <% } %>
-
-            <div class="card-reviews">
-                <h4>User Reviews</h4>
-                <%
-                PreparedStatement revStmt = con.prepareStatement(
-    "SELECT username, review, star_rating " +
-    "FROM reviews WHERE movie_name=? ORDER BY id DESC LIMIT 3"
-);
-                revStmt.setString(1, mName);
-                ResultSet revRs = revStmt.executeQuery();
-                boolean hasRev = false;
-
-                while(revRs.next())
-                {
-                    hasRev = true;
-                    int stars = revRs.getInt("star_rating");
-                    String starStr = "";
-                    for(int s = 0; s < stars; s++)  starStr += "★";
-                    for(int s = stars; s < 5; s++)  starStr += "☆";
-                %>
-                <div class="mini-review">
-                    <div class="reviewer">
-    <%= revRs.getString("username") %>
-                        <span style="color:#f5a623;font-size:11px;margin-left:4px;">
-                            <%= starStr %>
-                        </span>
-                    </div>
-                    <div class="review-text"><%= revRs.getString("review") %></div>
-                </div>
-                <%
-                }
-                revRs.close();
-                revStmt.close();
-                if(!hasRev) { %>
-                    <p class="no-reviews">No reviews yet. Be the first to review!</p>
-                <% } %>
-            </div>
-
-        </div>
     </div>
 
-    <%
-    }
-    topRs.close();
-    top.close();
-    %>
-    </div>
-    <% } %>
+    <div class="option-card">
 
+        <h3>Movie Ratings</h3>
 
-    <!-- RECENTLY WATCHED -->
-    <h2 class="section-title">Recently Watched Movies</h2>
-    <div class="movie-grid">
-    <%
-    PreparedStatement history = con.prepareStatement(
-        "SELECT m.name, m.genre, m.rating, m.image_url, m.description " +
-        "FROM movies m " +
-        "JOIN watch_history w ON m.name = w.movie_name LIMIT 6"
-    );
-    ResultSet histRs = history.executeQuery();
-    boolean histFound = false;
+        <p>
+            View ratings of every movie and sort them by name or rating.
+        </p>
 
-    while(histRs.next())
-    {
-        histFound = true;
-        String hName   = histRs.getString("name");
-        String hGenre  = histRs.getString("genre");
-        double hRating = histRs.getDouble("rating");
-        String hImg    = histRs.getString("image_url");
-        String hDesc   = histRs.getString("description");
-    %>
+        <a href="ratings.jsp" style="text-decoration:none;">
+            <button class="btn btn-primary">
+                View Ratings
+            </button>
+        </a>
 
-    <div class="movie-card">
-
-        <% if(hImg != null && !hImg.trim().isEmpty()) { %>
-            <img class="movie-poster" src="<%= hImg %>" alt="<%= hName %>"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-            <div class="no-poster" style="display:none;">No Image</div>
-        <% } else { %>
-            <div class="no-poster">No Image</div>
-        <% } %>
-
-        <div class="card-body">
-            <h3><%= hName %></h3>
-            <div class="card-meta">
-                <span class="badge badge-genre"><%= hGenre %></span>
-                <span class="badge badge-rating"><%= hRating %> / 5</span>
-                <span class="badge badge-watched">Watched</span>
-            </div>
-            <% if(hDesc != null && !hDesc.trim().isEmpty()) { %>
-                <p class="card-desc"><%= hDesc %></p>
-            <% } %>
-        </div>
     </div>
 
-    <%
-    }
-    histRs.close();
-    history.close();
-
-    if(!histFound) { %>
-    <div class="movie-card">
-        <div class="card-body">
-            <h3>No Movies Watched Yet</h3>
-            <p style="color:#888;font-size:13px;margin-top:8px;">
-                Watch movies to build your recommendation list.
-            </p>
-        </div>
-    </div>
-    <% } %>
-    </div>
-
-
+</div>
     <!-- WRITE A REVIEW -->
     <h2 class="section-title">Write a Review</h2>
     <div class="form-card">

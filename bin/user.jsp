@@ -279,7 +279,6 @@ String dbPort = System.getenv("MYSQLPORT") != null ? System.getenv("MYSQLPORT") 
 String dbName = System.getenv("MYSQLDATABASE") != null ? System.getenv("MYSQLDATABASE") : "moviedb";
 String dbUser = System.getenv("MYSQLUSER") != null ? System.getenv("MYSQLUSER") : "root";
 String dbPass = System.getenv("MYSQLPASSWORD") != null ? System.getenv("MYSQLPASSWORD") : "";
-
 String dbUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName;
 Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPass);
     String reviewMsg = "";

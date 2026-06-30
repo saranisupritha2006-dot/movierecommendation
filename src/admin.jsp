@@ -31,16 +31,13 @@ body{
 }
 
 .header{
-
     width:100%;
     background:#243B55;
     color:white;
     padding:20px 50px;
-
     display:flex;
     justify-content:space-between;
     align-items:center;
-
 }
 
 .header h1{
@@ -48,14 +45,12 @@ body{
 }
 
 .logout{
-
     background:#dc3545;
     color:white;
     padding:10px 20px;
     border-radius:8px;
     text-decoration:none;
     transition:.3s;
-
 }
 
 .logout:hover{
@@ -63,79 +58,58 @@ body{
 }
 
 .container{
-
     width:90%;
     margin:40px auto;
-
 }
 
 .welcome{
-
     text-align:center;
     margin-bottom:40px;
-
 }
 
 .welcome h2{
-
     color:#243B55;
     margin-bottom:10px;
-
 }
 
 .welcome p{
-
     color:#666;
-
 }
 
 .dashboard{
-
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
     gap:30px;
-
 }
 
 .card{
-
     background:white;
     border-radius:15px;
     padding:35px;
     text-align:center;
     box-shadow:0 10px 25px rgba(0,0,0,.15);
     transition:.3s;
-
 }
 
 .card:hover{
-
     transform:translateY(-8px);
-
 }
 
 .card h2{
-
     color:#243B55;
     margin-bottom:15px;
-
 }
 
 .card p{
-
     color:#666;
     margin-bottom:25px;
-
 }
 
 .card a{
-
     text-decoration:none;
-
 }
 
 .btn{
-
     background:#243B55;
     color:white;
     padding:12px 30px;
@@ -144,22 +118,17 @@ body{
     cursor:pointer;
     font-size:15px;
     transition:.3s;
-
 }
 
 .btn:hover{
-
     background:#141E30;
-
 }
 
 .footer{
-
     margin-top:60px;
     text-align:center;
     color:#777;
     padding-bottom:20px;
-
 }
 
 </style>
@@ -185,7 +154,7 @@ Logout
 <h2>Administrator Dashboard</h2>
 
 <p>
-Manage movies, ratings and recommendation system from one place.
+Manage movies and view system insights from one place.
 </p>
 
 </div>
@@ -210,29 +179,13 @@ Open
 
 <div class="card">
 
-<h2>Movie Ratings</h2>
+<h2>Analytics Dashboard</h2>
 
 <p>
-View all available movies along with their ratings.
+View live stats, charts and trends across the system.
 </p>
 
-<a href="ratings.jsp">
-<button class="btn">
-Open
-</button>
-</a>
-
-</div>
-
-<div class="card">
-
-<h2>Recommendations</h2>
-
-<p>
-View the recommendation engine and test movie suggestions.
-</p>
-
-<a href="recommendation.jsp">
+<a href="analytics.jsp">
 <button class="btn">
 Open
 </button>

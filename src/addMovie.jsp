@@ -15,6 +15,11 @@ String dbName = System.getenv("MYSQLDATABASE");
 String dbUser = System.getenv("MYSQLUSER");
 String dbPass = System.getenv("MYSQLPASSWORD");
 
+if(dbHost == null) dbHost = "localhost";
+if(dbPort == null) dbPort = "3306";
+if(dbName == null) dbName = "moviedb";
+if(dbUser == null) dbUser = "root";
+if(dbPass == null) dbPass = "";
 Connection con = DriverManager.getConnection(
     "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName,
     dbUser,
